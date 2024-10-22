@@ -14,13 +14,14 @@ class neuralNetwork:
         # Матрицы весовых коэфф-ов связейБ wih и who.
         # Весовые коэфф-ты связей между узлом i и узлом j
         # следующего слоя обозначены как  w_i_j
-        self.wih = (np.random.normal(0.0,pow(self.hnodes,-0.5)))
-        self.who = (np.random.normal(0.0,pow(self.onodes,-0.5)))
+        self.wih = (np.random.normal(0.0,pow(self.inodes,-0.5),(self.hnodes,self.inodes)))
+        self.who = (np.random.normal(0.0,pow(self.hnodes,-0.5),(self.onodes, self.hnodes)))
         # коэффициент обучения 
         self.lr = learningrate
         # использование сигмоиды в качестве функции активации
         self.activation_function = lambda x:scy.special.expit(x) 
 
+        pass
     # тренеровка нс
     def train(self,inputs_list,targets_list):
         # преобразование списка входных значений
@@ -47,6 +48,7 @@ class neuralNetwork:
         #  обновить весовые коэф для связей между входными и скрытым слоям
         self.wih += self.lr * np.dot((hidden_errors*hidden_outputs *(1.0 - hidden_outputs)),np.transpose(inputs))
 
+        pass
     # Опрос  нс 
     def query(self,inputs_list):
         # преобразование списка входных значений
@@ -76,19 +78,31 @@ learning_rate = 0.3
 # Экземпляр нс 
 n = neuralNetwork( input_nodes,hidden_nodes,output_nodes,learning_rate)
 
-print(n.query([1.0,0.5,-1.5]))
-
+# Загрузить в список текстовый набор CSV файло
 training_data_file = open('mnist_test_10.csv','r')
 training_data_list = training_data_file.readlines()
 training_data_file.close()
 
+# перебрать все записи в трен наборе данных 
 for record in training_data_list:
+    # получить список значений, используя символы запятой в качестве разделителей
     all_values = record.split(',')
 
+    # масштабировть и сместить входные значения
     inputs = (np.asfarray(all_values[1:]) / 255.0 * 0.99) + 0.01
 
+    # желаемого маркерного значения, равного 0,99
     targets = np.zeros(output_nodes) + 0.01
-
+    
+    #  all_values - целевое маркерное значение для данной записи
     targets[int(all_values[0])]  = 0.99
 
     n.train(inputs,targets)
+    pass
+
+n.query((np.asfarray(all_values[1:]) / 255.0 *0.99) + 0.01)
+
+
+
+
+
