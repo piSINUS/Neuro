@@ -41,7 +41,8 @@ class neuralNetwork:
         # ошибки входного слоя = (целевое значение - фактическое значение)
         output_errors = targets - final_outputs
         # ошибки скрытого слоя - это ошибки output_errors, распределенные пропорционально весовым коэф связей и рекомбинированные на скрытых узлах
-        hidden_errors = np.dot((self.who.T,output_errors))
+        hidden_errors = np.dot(self.who.T,output_errors)
+       
 
         #  обновить весовые коэф для связей между скрыт и входными слоями
         self.who += self.lr * np.dot((output_errors*final_outputs *(1.0 - final_outputs)),np.transpose(hidden_outputs))
@@ -79,7 +80,7 @@ learning_rate = 0.3
 n = neuralNetwork( input_nodes,hidden_nodes,output_nodes,learning_rate)
 
 # Загрузить в список текстовый набор CSV файло
-training_data_file = open('mnist_test_10.csv','r')
+training_data_file = open('mnist_train_100.csv','r')
 training_data_list = training_data_file.readlines()
 training_data_file.close()
 
@@ -100,9 +101,5 @@ for record in training_data_list:
     n.train(inputs,targets)
     pass
 
-n.query((np.asfarray(all_values[1:]) / 255.0 *0.99) + 0.01)
-
-
-
-
-
+a = n.query((np.asfarray(all_values[1:]) / 255.0 *0.99) + 0.01)
+print(a)
