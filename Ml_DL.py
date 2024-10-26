@@ -102,4 +102,4 @@ for record in training_data_list:
     pass
 
 a = n.query((np.asfarray(all_values[1:]) / 255.0 *0.99) + 0.01)
-print(a)
+print(a0)
