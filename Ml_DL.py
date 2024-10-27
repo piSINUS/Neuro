@@ -101,5 +101,11 @@ for record in training_data_list:
     n.train(inputs,targets)
     pass
 
+# тестирование нс
+# журнал оценки работы сети, первоначально пустой
+scorecard = []
+
+#перебрать все записи в тестовом наборе данных 
+
 a = n.query((np.asfarray(all_values[1:]) / 255.0 *0.99) + 0.01)
-print(a0)
+print(a)
