@@ -101,11 +101,38 @@ for record in training_data_list:
     n.train(inputs,targets)
     pass
 
+
+test_data_file = open("mnist_test_10.csv",'r')
+test_data_list  = test_data_file.readlines()
+test_data_file.close()
 # тестирование нс
 # журнал оценки работы сети, первоначально пустой
 scorecard = []
 
 #перебрать все записи в тестовом наборе данных 
+for record in test_data_list:
+    # получить список значений, используя символы запятой в качестве разделителей
+    all_values = record.split(',')
+    # правильгный ответ - ервое значение
+    correct_label = int(all_values[0])
+    print(correct_label,'Истинный маркер')
+    # масштабировать и сместить входные значения
+    inputs=(np.asfarray(all_values[1:]) / 255.0 * 0.99) + 0.01
+    # опрос сети
+    outputs = n.query(inputs)
+    # индекс наибольшего значения является маркерным значением
+    label = np.argmax(outputs)
+    print(label,'ответ сети')
+    # присоединить оценку ответа сети к концу списка
+    if (label == correct_label):
+        # в случае правельного ответа сети присоединить к списку значение 1
+        scorecard.append(1)
+    else:
+        # в случае правельного ответа сети присоединить к списку значение 0
+        scorecard.append(0)
+        pass
+    pass
 
-a = n.query((np.asfarray(all_values[1:]) / 255.0 *0.99) + 0.01)
-print(a)
+print(scorecard)
+# a = n.query((np.asfarray(all_values[1:]) / 255.0 *0.99) + 0.01)
+
