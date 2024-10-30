@@ -133,6 +133,8 @@ for record in test_data_list:
         pass
     pass
 
-print(scorecard)
+scorecard_array = np.asarray(scorecard)
+
+print(f"эффективность = {scorecard_array.sum() / scorecard_array.size}")
 # a = n.query((np.asfarray(all_values[1:]) / 255.0 *0.99) + 0.01)
 
