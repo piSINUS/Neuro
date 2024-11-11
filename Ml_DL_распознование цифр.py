@@ -140,3 +140,6 @@ scorecard_array = np.asarray(scorecard)
 
 print(f"эффективность = {scorecard_array.sum() / scorecard_array.size}")
 # a = n.query((np.asfarray(all_values[1:]) / 255.0 *0.99) + 0.01)
+
+if __name__ == "__main__":
+    print("This script is in the top-level code environment")
