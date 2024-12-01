@@ -4,6 +4,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import scipy.misc
 import glob
+import imageio.v3
+
 
 # определение класса нс
 class neuralNetwork:
@@ -86,7 +88,7 @@ training_data_file = open('minst_datas/mnist_train_100.csv','r')
 training_data_list = training_data_file.readlines()
 training_data_file.close()
 
-epochs = 2
+epochs =  10 
 for e in range(epochs):
 
     # перебрать все записи в трен наборе данных 
@@ -95,7 +97,7 @@ for e in range(epochs):
         all_values = record.split(',')
 
         # масштабировть и сместить входные значения
-        inputs = (np.asfarray(all_values[1:]) / 255.0 * 0.99) + 0.01
+        inputs = (np.asarray(all_values[1:]) / 255.0 * 0.99) + 0.01
 
         # желаемого маркерного значения, равного 0,99
         targets = np.zeros(output_nodes) + 0.01
@@ -106,42 +108,92 @@ for e in range(epochs):
         n.train(inputs,targets)
         pass
     pass
-img_array = scipy.misc.imread()
-test_data_file = open("mnist_test_10.csv",'r')
-test_data_list  = test_data_file.readlines()
-test_data_file.close()
-# тестирование нс
-# журнал оценки работы сети, первоначально пустой
-scorecard = []
 
-#перебрать все записи в тестовом наборе данных 
-for record in test_data_list:
-    # получить список значений, используя символы запятой в качестве разделителей
-    all_values = record.split(',')
-    # правильгный ответ - ервое значение
-    correct_label = int(all_values[0])
-    print(correct_label,'Истинный маркер')
-    # масштабировать и сместить входные значения
-    inputs=(np.asfarray(all_values[1:]) / 255.0 * 0.99) + 0.01
-    # опрос сети
-    outputs = n.query(inputs)
-    # индекс наибольшего значения является маркерным значением
-    label = np.argmax(outputs)
-    print(label,'ответ сети')
-    # присоединить оценку ответа сети к концу списка
-    if (label == correct_label):
-        # в случае правельного ответа сети присоединить к списку значение 1
-        scorecard.append(1)
-    else:
-        # в случае правельного ответа сети присоединить к списку значение 0
-        scorecard.append(0)
-        pass
+our_own_dataset =[]
+
+
+for image_file_name in glob.glob('data/0.png'):
+    
+    
+    label = int(image_file_name[-5:-4])
+    
+    
+    print ("loading ... ", image_file_name)
+    img_array = imageio.v3.imread(image_file_name, mode='F')
+    
+   
+    img_data  = 255.0 - img_array.reshape(784)
+    
+    
+    img_data = (img_data / 255.0 * 0.99) + 0.01
+    print(np.min(img_data))
+    print(np.max(img_data))
+    
+    
+    record = np.append(label,img_data)
+    our_own_dataset.append(record)
+    
     pass
 
-scorecard_array = np.asarray(scorecard)
+item = 0
 
-print(f"эффективность = {scorecard_array.sum() / scorecard_array.size}")
-# a = n.query((np.asfarray(all_values[1:]) / 255.0 *0.99) + 0.01)
 
-if __name__ == "__main__":
-    print("This script is in the top-level code environment")
+plt.pyplot.imshow(our_own_dataset[item][1:].reshape(28,28), cmap='Greys', interpolation='None')
+
+correct_label = our_own_dataset[item][0]
+
+inputs = our_own_dataset[item][1:]
+
+
+outputs = n.query(inputs)
+print (outputs)
+
+
+label = np.argmax(outputs)
+print("network says ", label)
+
+if (label == correct_label):
+    print ("match!")
+else:
+    print ("no match!")
+    pass
+
+# img_array = scipy.misc.imread()
+# test_data_file = open("mnist_test_10.csv",'r')
+# test_data_list  = test_data_file.readlines()
+# test_data_file.close()
+# # тестирование нс
+# # журнал оценки работы сети, первоначально пустой
+# scorecard = []
+
+# #перебрать все записи в тестовом наборе данных 
+# for record in test_data_list:
+#     # получить список значений, используя символы запятой в качестве разделителей
+#     all_values = record.split(',')
+#     # правильгный ответ - ервое значение
+#     correct_label = int(all_values[0])
+#     print(correct_label,'Истинный маркер')
+#     # масштабировать и сместить входные значения
+#     inputs=(np.asfarray(all_values[1:]) / 255.0 * 0.99) + 0.01
+#     # опрос сети
+#     outputs = n.query(inputs)
+#     # индекс наибольшего значения является маркерным значением
+#     label = np.argmax(outputs)
+#     print(label,'ответ сети')
+#     # присоединить оценку ответа сети к концу списка
+#     if (label == correct_label):
+#         # в случае правельного ответа сети присоединить к списку значение 1
+#         scorecard.append(1)
+#     else:
+#         # в случае правельного ответа сети присоединить к списку значение 0
+#         scorecard.append(0)
+#         pass
+#     pass
+
+# scorecard_array = np.asarray(scorecard)
+
+# print(f"эффективность = {scorecard_array.sum() / scorecard_array.size}")
+# # a = n.query((np.asfarray(all_values[1:]) / 255.0 *0.99) + 0.01)
+
+# if __name__ == "__main__":
+#     print("This script is in the top-level code environment")
